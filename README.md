@@ -16,19 +16,19 @@ To run the ASCII renderer, follow these steps:
 
 1. Clone the repository:
 
-   git clone https://github.com/yourusername/ascii-renderer.git
+   ```git clone https://github.com/yourusername/ascii-renderer.git```
 
 2. Navigate to the project directory:
 
-   cd ascii-renderer
+   ```cd ascii-renderer```
 
 3. Compile the source code (adjust based on your build system):
 
-   make
+   ```make```
 
 4. Run the renderer:
 
-   ./ascii-renderer
+   ```./ascii-renderer```
 
 ## Usage
 
