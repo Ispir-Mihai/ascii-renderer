@@ -8,7 +8,7 @@
 
 int main()
 {
-    Renderer renderer(75, 75);
+    Renderer renderer(50, 50);
 
     renderer.createProjectionMatrix(45.f, .01f, 1000.f);
     renderer.createViewMatrix(0.f, 0.f, 5.f);
