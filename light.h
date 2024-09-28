@@ -4,9 +4,6 @@
 
 struct Light
 {
-    fVec3 position;
-    float intensity;
-
     static float calculateLightIntensity(const fVec3 &normal, const fVec3 &lightDir)
     {
         float intensity = std::max(0.f, normal.dot(lightDir));

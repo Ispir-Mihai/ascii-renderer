@@ -1,3 +1,5 @@
+#pragma once
+
 #include "vertex.h"
 #include "primitives.h"
 #include "math.h"

@@ -1,9 +1,12 @@
 #pragma once
 
 #include <algorithm>
+#include <chrono>
+
 #include "console.h"
 #include "math.h"
 #include "vertex.h"
+#include "mesh.h"
 #include "light.h"
 
 class Renderer
@@ -14,6 +17,7 @@ public:
 
     void begin();
     void draw(Vertex *vertices, int *indices, int indiciesCount);
+    void draw(Mesh &mesh);
     void render();
 
     void createProjectionMatrix(float fov, float near, float far);
@@ -36,4 +40,6 @@ private:
 
     bool edgeFunction(const iVec2 &a, const iVec2 &b, const iVec2 &c);
     iVec2 worldToScreen(const fVec3 &worldPos);
+
+    void displayFPS(float fps);
 };

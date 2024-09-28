@@ -1,5 +1,4 @@
 #include "renderer.h"
-#include <iostream>
 
 Renderer::Renderer(int width, int height)
     : width(width), height(height)
@@ -61,8 +60,28 @@ void Renderer::draw(Vertex *vertices, int *indices, int indiciesCount)
         tri(vertices, triIndices);
     }
 }
+void Renderer::draw(Mesh &mesh) {
+    draw(mesh.getVertices(), mesh.getIndices(), mesh.getIndicesCount());
+}
 void Renderer::render()
 {
+    static auto lastTime = std::chrono::high_resolution_clock::now();
+    static int frameCount = 0;
+    static float fps = 0.0f;
+
+    frameCount++;
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<float> elapsedTime = currentTime - lastTime;
+
+    if (elapsedTime.count() >= 1.0f)
+    {
+        fps = frameCount;
+        frameCount = 0;
+        lastTime = currentTime;
+    }
+
+    displayFPS(fps);
+
     // Draw the back buffer to the screen buffer
     int screenIndex = 0;
     for (int y = 0; y < height; ++y)
@@ -255,4 +274,11 @@ iVec2 Renderer::worldToScreen(const fVec3 &worldPos)
     screenPos.y = (1.f - clipPosMat[1][0]) * .5f * height;
 
     return screenPos;
+}
+
+void Renderer::displayFPS(float fps)
+{
+    wchar_t buffer[50]; // Buffer to hold the output
+    swprintf(buffer, sizeof(buffer) / sizeof(wchar_t), L"FPS: %d\n", static_cast<int>(fps));
+    Console::fastwrite(buffer); // Write directly to the console
 }
