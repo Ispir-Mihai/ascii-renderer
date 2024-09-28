@@ -21,7 +21,7 @@ public:
     }
     inline void setRotation(fVec3 rotation)
     {
-        this->rotation = rotation;
+        this->rotation += rotation;
         for (int i = 0; i < verticesCount; ++i)
         {
             vertices[i].position = vertices[i].position.rotateX(rotation.x);

@@ -74,6 +74,16 @@ struct Vec3
         return {x / length, y / length, z / length};
     }
 
+    float distance(Vec3 v) const
+    {
+        return std::sqrt((x - v.x) * (x - v.x) + (y - v.y) * (y - v.y) + (z - v.z) * (z - v.z));
+    }
+
+    float length() const
+    {
+        return std::sqrt(x * x + y * y + z * z);
+    }
+
     float dot(Vec3 v) const
     {
         return x * v.x + y * v.y + z * v.z;

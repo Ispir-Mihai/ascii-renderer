@@ -60,11 +60,13 @@ void Renderer::draw(Vertex *vertices, int *indices, int indiciesCount)
         tri(vertices, triIndices);
     }
 }
-void Renderer::draw(Mesh &mesh) {
+void Renderer::draw(Mesh &mesh)
+{
     draw(mesh.getVertices(), mesh.getIndices(), mesh.getIndicesCount());
 }
 void Renderer::render()
 {
+    // Calculate the frames per second
     static auto lastTime = std::chrono::high_resolution_clock::now();
     static int frameCount = 0;
     static float fps = 0.0f;
@@ -80,6 +82,7 @@ void Renderer::render()
         lastTime = currentTime;
     }
 
+    // Display the frames per second
     displayFPS(fps);
 
     // Draw the back buffer to the screen buffer
@@ -149,6 +152,10 @@ void Renderer::line(fVec3 start, fVec3 end)
 
     line(screenStart, screenEnd);
 }
+float garea(const iVec2 &v0, const iVec2 &v1, const iVec2 &v2)
+{
+    return std::fabs((v1.x - v0.x) * (v2.y - v0.y) - (v2.x - v0.x) * (v1.y - v0.y)) / 2.0f;
+}
 void Renderer::tri(Vertex *vertices, int *indices)
 {
     iVec2 v0 = worldToScreen(vertices[indices[0]].position);
@@ -171,34 +178,35 @@ void Renderer::tri(Vertex *vertices, int *indices)
     {
         for (int x = minX; x <= maxX; ++x)
         {
+            iVec2 p = {x, y};
+
             // Check if the point (x, y) is inside the triangle
-            if (edgeFunction(v0, v1, {x, y}) &&
-                edgeFunction(v1, v2, {x, y}) &&
-                edgeFunction(v2, v0, {x, y}))
+            if (edgeFunction(v0, v1, p) &&
+                edgeFunction(v1, v2, p) &&
+                edgeFunction(v2, v0, p))
             {
-                // Barycentric coordinates
-                float alpha = ((v1.y - v2.y) * (x - v2.x) + (v2.x - v1.x) * (y - v2.y)) /
-                              ((v1.y - v2.y) * (v0.x - v2.x) + (v2.x - v1.x) * (v0.y - v2.y));
-                float beta = ((v2.y - v0.y) * (x - v2.x) + (v0.x - v2.x) * (y - v2.y)) /
-                             ((v1.y - v2.y) * (v0.x - v2.x) + (v2.x - v1.x) * (v0.y - v2.y));
-                float gamma = 1.0f - alpha - beta;
+                // Calculate the barycentric coordinates
+                float A0 = garea(p, v1, v2);
+                float A1 = garea(v0, p, v2);
+                float A2 = garea(v0, v1, p);
 
-                // Interpolating Z values using barycentric coordinates
-                float z = alpha * vertices[indices[0]].position.z +
-                          beta * vertices[indices[1]].position.z +
-                          gamma * vertices[indices[2]].position.z;
+                float alpha = A0 / area;
+                float beta = A1 / area;
+                float gamma = A2 / area;
 
-                // Interpolating normals using barycentric coordinates
-                fVec3 normal = (vertices[indices[0]].normals * alpha +
-                                vertices[indices[1]].normals * beta +
-                                vertices[indices[2]].normals * gamma)
-                                   .normalize();
+                // Interpolate the vertex attributes
+                float z = 1.f / (alpha / vertices[indices[0]].position.z + beta / vertices[indices[1]].position.z + gamma / vertices[indices[2]].position.z);
+                fVec3 normal = (vertices[indices[0]].normals * alpha + vertices[indices[1]].normals * beta + vertices[indices[2]].normals * gamma) * z;
 
                 // Calculate the light direction
                 fVec3 lightDir = fVec3(0, 0, 1);
 
                 // Calculate the light intensity based on the interpolated normal
-                float intensity = Light::calculateLightIntensity(lightDir, normal);
+                // float intensity = Light::calculateLightIntensity(normal, lightDir);
+                float intensity = std::max(0.f, std::abs(.5f * z));
+
+                // Clamp the intensity to the range [0, 1]
+                // intensity = std::max(0.f, intensity);
 
                 // Set the pixel color based on the intensity
                 fill = Light::getShade(intensity);
@@ -207,7 +215,6 @@ void Renderer::tri(Vertex *vertices, int *indices)
         }
     }
 }
-
 void Renderer::createProjectionMatrix(float fov, float near, float far)
 {
     // Create a perspective projection matrix
