@@ -2,14 +2,6 @@
 
 #include <cmath>
 
-namespace math
-{
-    inline float toRadians(float degrees)
-    {
-        return degrees * M_PI / 180.f;
-    }
-}
-
 template <typename T>
 struct Vec2
 {
@@ -35,6 +27,19 @@ struct Vec2
 };
 typedef Vec2<int> iVec2;
 typedef Vec2<float> fVec2;
+
+namespace math
+{
+    inline float toRadians(float degrees)
+    {
+        return degrees * M_PI / 180.f;
+    }
+
+    inline float area(const iVec2 &v0, const iVec2 &v1, const iVec2 &v2)
+    {
+        return std::fabs((v1.x - v0.x) * (v2.y - v0.y) - (v2.x - v0.x) * (v1.y - v0.y)) / 2.0f;
+    }
+}
 
 template <typename T>
 struct Vec3

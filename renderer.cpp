@@ -152,12 +152,9 @@ void Renderer::line(fVec3 start, fVec3 end)
 
     line(screenStart, screenEnd);
 }
-float garea(const iVec2 &v0, const iVec2 &v1, const iVec2 &v2)
-{
-    return std::fabs((v1.x - v0.x) * (v2.y - v0.y) - (v2.x - v0.x) * (v1.y - v0.y)) / 2.0f;
-}
 void Renderer::tri(Vertex *vertices, int *indices)
 {
+    // Convert the vertices to screen space
     iVec2 v0 = worldToScreen(vertices[indices[0]].position);
     iVec2 v1 = worldToScreen(vertices[indices[1]].position);
     iVec2 v2 = worldToScreen(vertices[indices[2]].position);
@@ -186,9 +183,9 @@ void Renderer::tri(Vertex *vertices, int *indices)
                 edgeFunction(v2, v0, p))
             {
                 // Calculate the barycentric coordinates
-                float A0 = garea(p, v1, v2);
-                float A1 = garea(v0, p, v2);
-                float A2 = garea(v0, v1, p);
+                float A0 = math::area(p, v1, v2);
+                float A1 = math::area(v0, p, v2);
+                float A2 = math::area(v0, v1, p);
 
                 float alpha = A0 / area;
                 float beta = A1 / area;
@@ -201,16 +198,18 @@ void Renderer::tri(Vertex *vertices, int *indices)
                 // Calculate the light direction
                 fVec3 lightDir = fVec3(0, 0, 1);
 
+                // Normalize the interpolated normal
+                normal = normal.normalize();
+
                 // Calculate the light intensity based on the interpolated normal
-                // float intensity = Light::calculateLightIntensity(normal, lightDir);
-                float intensity = std::max(0.f, std::abs(.5f * z));
+                float intensity = std::max(0.f, normal.dot(lightDir));
 
                 // Clamp the intensity to the range [0, 1]
-                // intensity = std::max(0.f, intensity);
+                intensity = std::max(0.f, std::min(intensity, 1.f));
 
                 // Set the pixel color based on the intensity
                 fill = Light::getShade(intensity);
-                set({x, y}); // Pass the calculated shade to the set function
+                set({x, y});
             }
         }
     }

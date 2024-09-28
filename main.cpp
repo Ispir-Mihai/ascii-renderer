@@ -14,13 +14,15 @@ int main()
     renderer.createViewMatrix(0.f, 0.f, 5.f);
 
     Cube cubePrimitive;
+    Cube cubePrimitive2;
+
     Mesh cubeMesh(cubePrimitive.getVertices(), cubePrimitive.getIndices(), cubePrimitive.getIndicesCount(), cubePrimitive.getVerticesCount());
-    
+
     for (;;)
     {
         renderer.begin();
 
-        cubeMesh.setRotation({.5, .75, 1});
+        cubeMesh.setRotation({.2, .4, .6});
         renderer.draw(cubeMesh);
 
         renderer.render();
