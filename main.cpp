@@ -17,12 +17,12 @@ int main()
     Cube cubePrimitive2;
 
     Mesh cubeMesh(cubePrimitive.getVertices(), cubePrimitive.getIndices(), cubePrimitive.getIndicesCount(), cubePrimitive.getVerticesCount());
-
+    
     for (;;)
     {
         renderer.begin();
 
-        cubeMesh.setRotation({.2, .4, .6});
+        cubeMesh.setRotation({1, 1, 1});
         renderer.draw(cubeMesh);
 
         renderer.render();

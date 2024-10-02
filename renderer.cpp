@@ -160,7 +160,7 @@ void Renderer::tri(Vertex *vertices, int *indices)
     iVec2 v2 = worldToScreen(vertices[indices[2]].position);
 
     // Check if the triangle is backfacing
-    float area = (v1.x - v0.x) * (v2.y - v0.y) - (v2.x - v0.x) * (v1.y - v0.y);
+    float area = math::triArea(v0, v1, v2);
     if (area <= 0)
         return; // Early exit if the triangle is backfacing
 
@@ -178,14 +178,14 @@ void Renderer::tri(Vertex *vertices, int *indices)
             iVec2 p = {x, y};
 
             // Check if the point (x, y) is inside the triangle
-            if (edgeFunction(v0, v1, p) &&
-                edgeFunction(v1, v2, p) &&
-                edgeFunction(v2, v0, p))
+            if (math::edgeFunction(v0, v1, p) &&
+                math::edgeFunction(v1, v2, p) &&
+                math::edgeFunction(v2, v0, p))
             {
                 // Calculate the barycentric coordinates
-                float A0 = math::area(p, v1, v2);
-                float A1 = math::area(v0, p, v2);
-                float A2 = math::area(v0, v1, p);
+                float A0 = math::triArea(p, v1, v2);
+                float A1 = math::triArea(v0, p, v2);
+                float A2 = math::triArea(v0, v1, p);
 
                 float alpha = A0 / area;
                 float beta = A1 / area;
@@ -247,11 +247,6 @@ void Renderer::createViewMatrix(float camX, float camY, float camZ)
     viewMatrix[3][3] = 1;
 }
 
-bool Renderer::edgeFunction(const iVec2 &a, const iVec2 &b, const iVec2 &c)
-{
-    // Edge function
-    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x) >= 0;
-}
 iVec2 Renderer::worldToScreen(const fVec3 &worldPos)
 {
     // Convert world space to screen space

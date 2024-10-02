@@ -38,7 +38,6 @@ private:
     void line(fVec3 start, fVec3 end);
     void tri(Vertex *vertices, int *indices);
 
-    bool edgeFunction(const iVec2 &a, const iVec2 &b, const iVec2 &c);
     iVec2 worldToScreen(const fVec3 &worldPos);
 
     void displayFPS(float fps);
