@@ -16,7 +16,7 @@ To run the ASCII renderer, follow these steps:
 
 1. Clone the repository:
 
-   ```git clone https://github.com/yourusername/ascii-renderer.git```
+   ```git clone https://github.com/Ispir-Mihai/ascii-renderer.git```
 
 2. Navigate to the project directory:
 
